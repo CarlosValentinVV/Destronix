@@ -34,4 +34,20 @@
     <string name="search_filter_order">Orden: %1$s</string>
     <string name="search_filters_clear">Limpiar filtros</string>
     <string name="search_loading_more">Cargando más resultados…</string>
+
+    <string name="detail_title">Detalle</string>
+    <string name="detail_synopsis">Sinopsis</string>
+    <string name="detail_characters">Personajes</string>
+    <string name="detail_videos">Vídeos y tráilers</string>
+    <string name="detail_recommendations">Recomendados para ti</string>
+    <string name="detail_related">Relacionados</string>
+    <string name="detail_add_library">Añadir a mi biblioteca</string>
+    <string name="detail_in_library">En mi biblioteca</string>
+    <string name="detail_remove_library">Quitar de la biblioteca</string>
+    <string name="detail_change_status">Cambiar estado</string>
+    <string name="detail_watch_trailer">Ver tráiler</string>
+    <string name="detail_expand">Ver más</string>
+    <string name="detail_collapse">Ver menos</string>
+    <string name="detail_no_videos">No hay vídeos disponibles.</string>
+    <string name="detail_no_characters">No hay personajes disponibles.</string>
 </resources>

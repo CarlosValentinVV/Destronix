@@ -3,7 +3,10 @@ package com.project.destronix.presentation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -40,10 +43,20 @@ fun DestronixApp() {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = currentTopLevel?.let { stringResource(it.labelRes) }
-                            ?: stringResource(R.string.app_name),
+                        text = when {
+                            currentTopLevel != null -> stringResource(currentTopLevel.labelRes)
+                            currentRoute?.startsWith("anime/") == true -> stringResource(R.string.detail_title)
+                            else -> stringResource(R.string.app_name)
+                        },
                         style = MaterialTheme.typography.titleLarge,
                     )
+                },
+                navigationIcon = {
+                    if (currentTopLevel == null && navController.previousBackStackEntry != null) {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = null)
+                        }
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
