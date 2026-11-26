@@ -19,12 +19,16 @@ enum class DestronixDestination(
     SEARCH("search", R.string.nav_search, Icons.Rounded.Search, true),
     LIBRARY("library", R.string.nav_library, Icons.Rounded.Bookmark, true),
     SETTINGS("settings", R.string.nav_settings, Icons.Rounded.Settings, true),
-    DETAIL("anime/{animeId}", R.string.nav_home);
+    DETAIL("anime/{animeId}", R.string.nav_home),
+    SEARCH_GENRE("search_genre/{genreId}", R.string.nav_search);
 
     companion object {
         const val ARG_ANIME_ID = "animeId"
+        const val ARG_GENRE_ID = "genreId"
 
         fun detailRoute(animeId: Int): String = "anime/$animeId"
+
+        fun genreRoute(genreId: Int): String = "search_genre/$genreId"
 
         val topLevel: List<DestronixDestination> = entries.filter { it.isTopLevel }
     }
