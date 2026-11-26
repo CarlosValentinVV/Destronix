@@ -3,10 +3,13 @@ package com.project.destronix.presentation.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.project.destronix.presentation.common.PlaceholderScreen
 import com.project.destronix.presentation.home.HomeScreen
+import com.project.destronix.presentation.search.SearchScreen
 
 @Composable
 fun DestronixNavHost(
@@ -26,7 +29,10 @@ fun DestronixNavHost(
             )
         }
         composable(DestronixDestination.SEARCH.route) {
-            PlaceholderScreen(title = "Buscar")
+            SearchScreen(
+                initialGenreId = null,
+                onAnimeClick = { navController.navigate(DestronixDestination.detailRoute(it)) },
+            )
         }
         composable(DestronixDestination.LIBRARY.route) {
             PlaceholderScreen(title = "Biblioteca")
@@ -37,8 +43,16 @@ fun DestronixNavHost(
         composable(DestronixDestination.DETAIL.route) {
             PlaceholderScreen(title = "Detalle de anime")
         }
-        composable(DestronixDestination.SEARCH_GENRE.route) {
-            PlaceholderScreen(title = "Búsqueda por género")
+        composable(
+            route = DestronixDestination.SEARCH_GENRE.route,
+            arguments = listOf(
+                navArgument(DestronixDestination.ARG_GENRE_ID) { type = NavType.IntType },
+            ),
+        ) { entry ->
+            SearchScreen(
+                initialGenreId = entry.arguments?.getInt(DestronixDestination.ARG_GENRE_ID),
+                onAnimeClick = { navController.navigate(DestronixDestination.detailRoute(it)) },
+            )
         }
     }
 }

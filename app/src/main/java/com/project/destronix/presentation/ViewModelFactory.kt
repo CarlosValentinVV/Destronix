@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.project.destronix.di.AppContainer
 import com.project.destronix.presentation.home.HomeViewModel
+import com.project.destronix.presentation.search.SearchViewModel
 
 /** Fábrica central de ViewModels: único punto donde se inyectan los casos de uso. */
 class DestronixViewModelFactory(
@@ -15,6 +16,14 @@ class DestronixViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T = when {
         modelClass.isAssignableFrom(HomeViewModel::class.java) ->
             HomeViewModel(container.getHomeFeed) as T
+
+        modelClass.isAssignableFrom(SearchViewModel::class.java) ->
+            SearchViewModel(
+                container.searchAnime,
+                container.observeSearchHistory,
+                container.saveSearchQuery,
+                container.clearSearchHistory,
+            ) as T
 
         else -> throw IllegalArgumentException("ViewModel no registrado: ${modelClass.name}")
     }
