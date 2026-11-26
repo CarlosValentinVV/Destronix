@@ -12,7 +12,7 @@ Aplicación Android para descubrir, organizar y ver anime. Construida con **Jetp
 | Detalle de anime | ✅ implementado |
 | Biblioteca personal | ✅ implementado |
 | Reproductor | ✅ implementado |
-| Ajustes y pruebas finales | ⏳ planificado |
+| Ajustes y pruebas finales | ✅ implementado |
 
 Cada fase se entrega en su propia rama `feature/*` con una Pull Request documentada.
 
@@ -38,6 +38,8 @@ La dependencia siempre apunta hacia `domain`: la UI llama a casos de uso, los ca
 - **Inyección manual** mediante `AppContainer`, sin frameworks de anotación, para mantener un grafo explícito y pruebas rápidas.
 - **Reproductor Media3** con vídeos públicos de demostración: Jikan no facilita streams legales de episodios. Al terminar un episodio se actualiza el progreso de la biblioteca.
 - **Material 3** con paleta propia (azul noche, violeta y cian), soporte para tema claro/oscuro y dynamic color opcional.
+- **DataStore Preferences** para persistir tema, modo de color y borrado del historial; el tema se aplica de forma reactiva desde la raíz de la app.
+- **GitHub Actions** compila el APK de depuración y ejecuta las pruebas unitarias en cada pull request.
 
 ## Requisitos y ejecución
 
@@ -50,7 +52,7 @@ La app necesita conexión a internet para cargar el catálogo; la biblioteca per
 
 ## Pruebas
 
-Las pruebas unitarias cubren mapeo de DTOs, conversiones de error y repositorios con servicios falsos, sin depender de la red.
+Las pruebas unitarias cubren mapeo de DTOs, conversiones de error, repositorios con servicios falsos y los estados de todos los ViewModels, sin depender de la red. Se ejecutan con `./gradlew :app:testDebugUnitTest` y también en CI.
 
 ## Licencia de datos
 

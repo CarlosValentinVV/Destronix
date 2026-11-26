@@ -9,6 +9,7 @@ import com.project.destronix.presentation.home.HomeViewModel
 import com.project.destronix.presentation.library.LibraryViewModel
 import com.project.destronix.presentation.player.PlayerViewModel
 import com.project.destronix.presentation.search.SearchViewModel
+import com.project.destronix.presentation.settings.SettingsViewModel
 
 /** Fábrica central de ViewModels: único punto donde se inyectan los casos de uso. */
 class DestronixViewModelFactory(
@@ -52,6 +53,14 @@ class DestronixViewModelFactory(
                 container.saveLibraryEntry,
                 container.setWatchProgress,
                 container.setLibraryStatus,
+            ) as T
+
+        modelClass.isAssignableFrom(SettingsViewModel::class.java) ->
+            SettingsViewModel(
+                container.observeThemeSettings,
+                container.setThemeMode,
+                container.setDynamicColor,
+                container.clearSearchHistory,
             ) as T
 
         else -> throw IllegalArgumentException("ViewModel no registrado: ${modelClass.name}")

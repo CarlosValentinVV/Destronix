@@ -1,0 +1,8 @@
+package com.project.destronix.domain.model
+
+enum class ThemeMode { SYSTEM, LIGHT, DARK }
+
+data class ThemeSettings(
+    val mode: ThemeMode = ThemeMode.SYSTEM,
+    val dynamicColor: Boolean = false,
+)
