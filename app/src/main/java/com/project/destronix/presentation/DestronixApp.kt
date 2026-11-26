@@ -54,7 +54,7 @@ fun DestronixApp() {
                 navigationIcon = {
                     if (currentTopLevel == null && navController.previousBackStackEntry != null) {
                         IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(Icons.Rounded.ArrowBack, contentDescription = null)
+                            Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = null)
                         }
                     }
                 },
