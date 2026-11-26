@@ -40,7 +40,6 @@ fun DestronixNavHost(
         composable(DestronixDestination.LIBRARY.route) {
             LibraryScreen(
                 onAnimeClick = { navController.navigate(DestronixDestination.detailRoute(it)) },
-                onSearchClick = { navController.navigate(DestronixDestination.SEARCH.route) },
             )
         }
         composable(DestronixDestination.SETTINGS.route) {

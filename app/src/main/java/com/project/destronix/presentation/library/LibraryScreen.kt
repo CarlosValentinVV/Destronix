@@ -19,9 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.DeleteOutline
 import androidx.compose.material.icons.rounded.Remove
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -53,7 +51,6 @@ import com.project.destronix.presentation.common.ImageFallback
 @Composable
 fun LibraryScreen(
     onAnimeClick: (Int) -> Unit,
-    onSearchClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val viewModel: LibraryViewModel = viewModel(factory = LocalViewModelFactory.current)
@@ -82,10 +79,7 @@ fun LibraryScreen(
 
         val visible = state.visibleEntries
         if (visible.isEmpty()) {
-            LibraryEmpty(
-                hasEntries = state.entries.isNotEmpty(),
-                onSearchClick = onSearchClick,
-            )
+            LibraryEmpty(hasEntries = state.entries.isNotEmpty())
         } else {
             LazyColumn(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
@@ -208,10 +202,7 @@ private fun LibraryItem(
 }
 
 @Composable
-private fun LibraryEmpty(
-    hasEntries: Boolean,
-    onSearchClick: () -> Unit,
-) {
+private fun LibraryEmpty(hasEntries: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -226,9 +217,5 @@ private fun LibraryEmpty(
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Button(onClick = onSearchClick, modifier = Modifier.padding(top = 20.dp)) {
-            Icon(Icons.Rounded.Search, contentDescription = null)
-            Text(stringResource(R.string.library_find_anime), modifier = Modifier.padding(start = 8.dp))
-        }
     }
 }
