@@ -66,4 +66,19 @@
     <string name="player_episodes">Episodios</string>
     <string name="player_disclaimer">Vídeos de demostración: Jikan no proporciona streams oficiales.</string>
     <string name="player_watch">Ver episodios</string>
+
+    <string name="settings_appearance">Apariencia</string>
+    <string name="settings_theme_system">Sistema</string>
+    <string name="settings_theme_light">Claro</string>
+    <string name="settings_theme_dark">Oscuro</string>
+    <string name="settings_dynamic_color">Colores del sistema</string>
+    <string name="settings_dynamic_color_desc">Usa la paleta de Android 12+ en lugar de la paleta Destronix.</string>
+    <string name="settings_data">Datos</string>
+    <string name="settings_clear_history">Borrar historial de búsqueda</string>
+    <string name="settings_history_cleared">Historial borrado.</string>
+    <string name="settings_about">Acerca de</string>
+    <string name="settings_version">Destronix 1.0</string>
+    <string name="settings_attribution">Datos e imágenes de MyAnimeList, servidos por Jikan API. Proyecto de demostración.</string>
+    <string name="settings_open_jikan">Visitar Jikan</string>
+    <string name="settings_player_note">El reproductor usa vídeos públicos de prueba porque Jikan no ofrece streams oficiales.</string>
 </resources>

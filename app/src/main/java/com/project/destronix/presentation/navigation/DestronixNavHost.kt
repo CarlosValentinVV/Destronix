@@ -7,12 +7,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.project.destronix.presentation.common.PlaceholderScreen
 import com.project.destronix.presentation.detail.DetailScreen
 import com.project.destronix.presentation.home.HomeScreen
 import com.project.destronix.presentation.library.LibraryScreen
 import com.project.destronix.presentation.player.PlayerScreen
 import com.project.destronix.presentation.search.SearchScreen
+import com.project.destronix.presentation.settings.SettingsScreen
 
 @Composable
 fun DestronixNavHost(
@@ -44,7 +44,7 @@ fun DestronixNavHost(
             )
         }
         composable(DestronixDestination.SETTINGS.route) {
-            PlaceholderScreen(title = "Ajustes")
+            SettingsScreen()
         }
         composable(
             route = DestronixDestination.DETAIL.route,

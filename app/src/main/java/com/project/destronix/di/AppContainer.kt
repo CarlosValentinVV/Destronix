@@ -13,9 +13,11 @@ import com.project.destronix.data.remote.JikanRateLimitInterceptor
 import com.project.destronix.data.repository.AnimeRepositoryImpl
 import com.project.destronix.data.repository.LibraryRepositoryImpl
 import com.project.destronix.data.repository.SearchHistoryRepositoryImpl
+import com.project.destronix.data.repository.SettingsRepositoryImpl
 import com.project.destronix.domain.repository.AnimeRepository
 import com.project.destronix.domain.repository.LibraryRepository
 import com.project.destronix.domain.repository.SearchHistoryRepository
+import com.project.destronix.domain.repository.SettingsRepository
 import com.project.destronix.domain.usecase.ClearSearchHistoryUseCase
 import com.project.destronix.domain.usecase.GetAnimeDetailsUseCase
 import com.project.destronix.domain.usecase.GetHomeFeedUseCase
@@ -25,8 +27,11 @@ import com.project.destronix.domain.usecase.ObserveSearchHistoryUseCase
 import com.project.destronix.domain.usecase.RemoveFromLibraryUseCase
 import com.project.destronix.domain.usecase.SaveLibraryEntryUseCase
 import com.project.destronix.domain.usecase.SaveSearchQueryUseCase
+import com.project.destronix.domain.usecase.ObserveThemeSettingsUseCase
 import com.project.destronix.domain.usecase.SearchAnimeUseCase
+import com.project.destronix.domain.usecase.SetDynamicColorUseCase
 import com.project.destronix.domain.usecase.SetLibraryStatusUseCase
+import com.project.destronix.domain.usecase.SetThemeModeUseCase
 import com.project.destronix.domain.usecase.SetWatchProgressUseCase
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -40,6 +45,7 @@ interface AppContainer {
     val animeRepository: AnimeRepository
     val libraryRepository: LibraryRepository
     val searchHistoryRepository: SearchHistoryRepository
+    val settingsRepository: SettingsRepository
 
     val getHomeFeed: GetHomeFeedUseCase
     val searchAnime: SearchAnimeUseCase
@@ -53,6 +59,9 @@ interface AppContainer {
     val observeSearchHistory: ObserveSearchHistoryUseCase
     val saveSearchQuery: SaveSearchQueryUseCase
     val clearSearchHistory: ClearSearchHistoryUseCase
+    val observeThemeSettings: ObserveThemeSettingsUseCase
+    val setThemeMode: SetThemeModeUseCase
+    val setDynamicColor: SetDynamicColorUseCase
 }
 
 class DefaultAppContainer(private val context: Context) : AppContainer {
@@ -101,6 +110,10 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
         SearchHistoryRepositoryImpl(database.searchHistoryDao())
     }
 
+    override val settingsRepository: SettingsRepository by lazy {
+        SettingsRepositoryImpl(context.applicationContext)
+    }
+
     override val getHomeFeed = GetHomeFeedUseCase(animeRepository)
     override val searchAnime = SearchAnimeUseCase(animeRepository)
     override val getAnimeDetails = GetAnimeDetailsUseCase(animeRepository)
@@ -113,6 +126,9 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
     override val observeSearchHistory = ObserveSearchHistoryUseCase(searchHistoryRepository)
     override val saveSearchQuery = SaveSearchQueryUseCase(searchHistoryRepository)
     override val clearSearchHistory = ClearSearchHistoryUseCase(searchHistoryRepository)
+    override val observeThemeSettings = ObserveThemeSettingsUseCase(settingsRepository)
+    override val setThemeMode = SetThemeModeUseCase(settingsRepository)
+    override val setDynamicColor = SetDynamicColorUseCase(settingsRepository)
 }
 
 val LocalAppContainer = staticCompositionLocalOf<AppContainer> {
