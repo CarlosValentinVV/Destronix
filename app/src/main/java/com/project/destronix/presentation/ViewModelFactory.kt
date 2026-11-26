@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.project.destronix.di.AppContainer
 import com.project.destronix.presentation.detail.AnimeDetailViewModel
 import com.project.destronix.presentation.home.HomeViewModel
+import com.project.destronix.presentation.library.LibraryViewModel
 import com.project.destronix.presentation.search.SearchViewModel
 
 /** Fábrica central de ViewModels: único punto donde se inyectan los casos de uso. */
@@ -31,6 +32,14 @@ class DestronixViewModelFactory(
                 container.getAnimeDetails,
                 container.observeLibraryEntry,
                 container.saveLibraryEntry,
+                container.setLibraryStatus,
+                container.removeFromLibrary,
+            ) as T
+
+        modelClass.isAssignableFrom(LibraryViewModel::class.java) ->
+            LibraryViewModel(
+                container.observeLibrary,
+                container.setWatchProgress,
                 container.setLibraryStatus,
                 container.removeFromLibrary,
             ) as T

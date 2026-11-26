@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import com.project.destronix.presentation.common.PlaceholderScreen
 import com.project.destronix.presentation.detail.DetailScreen
 import com.project.destronix.presentation.home.HomeScreen
+import com.project.destronix.presentation.library.LibraryScreen
 import com.project.destronix.presentation.search.SearchScreen
 
 @Composable
@@ -36,7 +37,10 @@ fun DestronixNavHost(
             )
         }
         composable(DestronixDestination.LIBRARY.route) {
-            PlaceholderScreen(title = "Biblioteca")
+            LibraryScreen(
+                onAnimeClick = { navController.navigate(DestronixDestination.detailRoute(it)) },
+                onSearchClick = { navController.navigate(DestronixDestination.SEARCH.route) },
+            )
         }
         composable(DestronixDestination.SETTINGS.route) {
             PlaceholderScreen(title = "Ajustes")
