@@ -7,7 +7,7 @@ Aplicación Android para descubrir, organizar y ver anime. Construida con **Jetp
 | Módulo | Estado |
 | --- | --- |
 | Arquitectura, datos y tema | ✅ implementado |
-| Pantalla de inicio | 🚧 en curso |
+| Pantalla de inicio | ✅ implementado |
 | Búsqueda y filtros | ⏳ planificado |
 | Detalle de anime | ⏳ planificado |
 | Biblioteca personal | ⏳ planificado |
