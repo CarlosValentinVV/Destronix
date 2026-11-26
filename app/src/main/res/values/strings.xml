@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Destronix</string>
+    <string name="nav_home">Inicio</string>
+    <string name="nav_search">Buscar</string>
+    <string name="nav_library">Biblioteca</string>
+    <string name="nav_settings">Ajustes</string>
+    <string name="placeholder_title">Muy pronto</string>
+    <string name="placeholder_body">Esta sección se está construyendo. Vuelve en la próxima actualización.</string>
 </resources>
