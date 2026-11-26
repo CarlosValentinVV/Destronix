@@ -21,4 +21,17 @@
     <string name="error_server">El servidor no responde. Inténtalo más tarde.</string>
     <string name="error_unknown">Algo salió mal. Inténtalo de nuevo.</string>
     <string name="action_retry">Reintentar</string>
+
+    <string name="search_placeholder">Busca anime por título…</string>
+    <string name="search_history">Búsquedas recientes</string>
+    <string name="search_clear_history">Borrar historial</string>
+    <string name="search_empty">Sin resultados. Prueba con otro título o quita algún filtro.</string>
+    <string name="search_hint">Empieza a escribir para descubrir anime.</string>
+    <string name="search_filter_type">Tipo: %1$s</string>
+    <string name="search_filter_status">Estado: %1$s</string>
+    <string name="search_filter_score">Nota: %1$s</string>
+    <string name="search_filter_year">Año: %1$s</string>
+    <string name="search_filter_order">Orden: %1$s</string>
+    <string name="search_filters_clear">Limpiar filtros</string>
+    <string name="search_loading_more">Cargando más resultados…</string>
 </resources>
