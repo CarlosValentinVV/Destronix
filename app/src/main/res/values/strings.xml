@@ -50,4 +50,15 @@
     <string name="detail_collapse">Ver menos</string>
     <string name="detail_no_videos">No hay vídeos disponibles.</string>
     <string name="detail_no_characters">No hay personajes disponibles.</string>
+
+    <string name="library_all">Todas</string>
+    <string name="library_empty">Tu biblioteca está vacía. Añade anime desde el detalle o la búsqueda.</string>
+    <string name="library_empty_filter">No hay anime con este estado.</string>
+    <string name="library_find_anime">Buscar anime</string>
+    <string name="library_episodes">%1$d / %2$d episodios</string>
+    <string name="library_episodes_unknown">%1$d episodios vistos</string>
+    <string name="library_increase">Añadir episodio visto</string>
+    <string name="library_decrease">Quitar episodio visto</string>
+    <string name="library_remove">Quitar de la biblioteca</string>
+    <string name="library_mark_completed">Marcar como completado</string>
 </resources>
