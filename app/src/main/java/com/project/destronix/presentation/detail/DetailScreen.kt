@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.PlayCircle
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
@@ -71,6 +72,7 @@ import com.project.destronix.presentation.common.openExternalUrl
 fun DetailScreen(
     animeId: Int,
     onAnimeClick: (Int) -> Unit,
+    onPlayClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val viewModel: AnimeDetailViewModel = viewModel(factory = LocalViewModelFactory.current)
@@ -94,6 +96,7 @@ fun DetailScreen(
             onToggleLibrary = viewModel::toggleLibrary,
             onStatusChange = viewModel::changeStatus,
             onAnimeClick = onAnimeClick,
+            onPlayClick = onPlayClick,
             modifier = modifier,
         )
     }
@@ -107,6 +110,7 @@ private fun DetailContent(
     onToggleLibrary: () -> Unit,
     onStatusChange: (LibraryStatus) -> Unit,
     onAnimeClick: (Int) -> Unit,
+    onPlayClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -137,6 +141,11 @@ private fun DetailContent(
                 )
             }
             if (inLibrary) StatusMenu(currentStatus = currentStatus, onChange = onStatusChange)
+            Button(onClick = { onPlayClick(anime.id) }) {
+                Icon(Icons.Rounded.PlayArrow, contentDescription = null)
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.player_watch))
+            }
             trailerUrl?.let { url ->
                 Button(onClick = { context.openExternalUrl(url) }) {
                     Icon(Icons.Rounded.PlayCircle, contentDescription = null)
