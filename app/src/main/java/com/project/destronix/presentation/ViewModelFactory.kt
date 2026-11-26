@@ -48,6 +48,7 @@ class DestronixViewModelFactory(
 
         modelClass.isAssignableFrom(PlayerViewModel::class.java) ->
             PlayerViewModel(
+                container.episodeCatalog,
                 container.getAnimeDetails,
                 container.observeLibraryEntry,
                 container.saveLibraryEntry,

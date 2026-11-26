@@ -38,6 +38,7 @@ class PlayerViewModelTest {
     private val dispatcher = StandardTestDispatcher()
     private val repository = FakeAnimeRepository()
     private val library = FakeLibraryRepository()
+    private val catalog = DemoEpisodeCatalog(DemoEpisodeCatalog.DEFAULT_STREAM_BASE_URL)
 
     @Before
     fun setUp() {
@@ -60,6 +61,17 @@ class PlayerViewModelTest {
         assertEquals(3, viewModel.uiState.episodes.size)
         assertTrue(viewModel.uiState.episodes.first().streamUrl.endsWith(".mp4"))
         assertEquals(0, viewModel.uiState.currentEpisodeIndex)
+    }
+
+    @Test
+    fun `episodes use the configured stream base url`() = runTest(dispatcher) {
+        val configuredCatalog = DemoEpisodeCatalog("https://ejemplo.test/videos/")
+        val viewModel = createViewModel(configuredCatalog)
+
+        viewModel.load(5)
+        runCurrent()
+
+        assertTrue(viewModel.uiState.episodes.first().streamUrl.startsWith("https://ejemplo.test/videos/"))
     }
 
     @Test
@@ -109,10 +121,13 @@ class PlayerViewModelTest {
 
         assertEquals(1, viewModel.uiState.currentEpisodeIndex)
         assertEquals(2, viewModel.uiState.episodes[1].number)
-        assertEquals(3, DemoEpisodeCatalog.forAnime(anime()).size)
+        assertEquals(3, catalog.forAnime(anime()).size)
     }
 
-    private fun createViewModel() = PlayerViewModel(
+    private fun createViewModel(
+        episodeCatalog: DemoEpisodeCatalog = catalog,
+    ) = PlayerViewModel(
+        episodeCatalog,
         GetAnimeDetailsUseCase(repository),
         ObserveLibraryEntryUseCase(library),
         SaveLibraryEntryUseCase(library),
