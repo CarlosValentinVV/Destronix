@@ -6,11 +6,9 @@ import kotlin.math.abs
 
 /**
  * Catálogo de demostración: Jikan ofrece metadatos y tráilers, pero no streams de episodios.
- * Se usan vídeos de prueba públicos para verificar el reproductor de principio a fin.
+ * La base de los vídeos de prueba se toma de la configuración externa de fuentes.
  */
-object DemoEpisodeCatalog {
-
-    private const val BASE_URL = "https://storage.googleapis.com/gtv-videos-bucket/sample/"
+class DemoEpisodeCatalog(private val streamBaseUrl: String) {
 
     private val clips = listOf(
         "BigBuckBunny.mp4",
@@ -30,9 +28,13 @@ object DemoEpisodeCatalog {
             VideoEpisode(
                 number = number,
                 title = "Episodio $number",
-                streamUrl = BASE_URL + clips[(number - 1 + offset) % clips.size],
+                streamUrl = streamBaseUrl + clips[(number - 1 + offset) % clips.size],
                 thumbnailUrl = anime.imageUrl,
             )
         }
+    }
+
+    companion object {
+        const val DEFAULT_STREAM_BASE_URL = "https://storage.googleapis.com/gtv-videos-bucket/sample/"
     }
 }

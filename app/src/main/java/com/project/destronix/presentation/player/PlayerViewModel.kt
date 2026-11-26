@@ -29,6 +29,7 @@ data class PlayerUiState(
 )
 
 class PlayerViewModel(
+    private val episodeCatalog: DemoEpisodeCatalog,
     private val getAnimeDetails: GetAnimeDetailsUseCase,
     private val observeLibraryEntry: ObserveLibraryEntryUseCase,
     private val saveLibraryEntry: SaveLibraryEntryUseCase,
@@ -51,7 +52,7 @@ class PlayerViewModel(
                     val anime = result.data.anime
                     uiState = uiState.copy(
                         details = result.data,
-                        episodes = DemoEpisodeCatalog.forAnime(anime),
+                        episodes = episodeCatalog.forAnime(anime),
                         isLoading = false,
                     )
                 }
