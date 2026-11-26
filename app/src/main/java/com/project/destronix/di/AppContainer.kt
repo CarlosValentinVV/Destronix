@@ -7,6 +7,10 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.project.destronix.core.DefaultDispatcherProvider
 import com.project.destronix.core.DispatcherProvider
+import com.project.destronix.data.catalog.DemoEpisodeCatalog
+import com.project.destronix.data.config.AnimeConfigLoader
+import com.project.destronix.data.config.AnimeSourceConfig
+import com.project.destronix.data.config.AnimeSourcesConfig
 import com.project.destronix.data.local.DestronixDatabase
 import com.project.destronix.data.remote.JikanApiService
 import com.project.destronix.data.remote.JikanRateLimitInterceptor
@@ -42,6 +46,8 @@ import java.io.File
 /** Grafo de dependencias de la aplicación (inyección manual, sin frameworks). */
 interface AppContainer {
     val dispatchers: DispatcherProvider
+    val animeSource: AnimeSourceConfig
+    val episodeCatalog: DemoEpisodeCatalog
     val animeRepository: AnimeRepository
     val libraryRepository: LibraryRepository
     val searchHistoryRepository: SearchHistoryRepository
@@ -76,10 +82,20 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
         ).build()
     }
 
+    private val animeConfig: AnimeSourcesConfig by lazy {
+        AnimeConfigLoader.load(context.applicationContext)
+    }
+
+    override val animeSource: AnimeSourceConfig get() = animeConfig.activeSource
+
+    override val episodeCatalog: DemoEpisodeCatalog by lazy {
+        DemoEpisodeCatalog(animeSource.streamBaseUrl)
+    }
+
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(JikanRateLimitInterceptor())
-            .cache(Cache(File(context.cacheDir, "jikan_http_cache"), 10L * 1024 * 1024))
+            .cache(Cache(File(context.cacheDir, "anime_http_cache"), 10L * 1024 * 1024))
             .build()
     }
 
@@ -91,7 +107,7 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
 
     private val jikanApi: JikanApiService by lazy {
         Retrofit.Builder()
-            .baseUrl("https://api.jikan.moe/v4/")
+            .baseUrl(animeSource.apiBaseUrl)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
