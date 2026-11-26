@@ -11,7 +11,7 @@ Aplicación Android para descubrir, organizar y ver anime. Construida con **Jetp
 | Búsqueda y filtros | ✅ implementado |
 | Detalle de anime | ✅ implementado |
 | Biblioteca personal | ✅ implementado |
-| Reproductor | ⏳ planificado |
+| Reproductor | ✅ implementado |
 | Ajustes y pruebas finales | ⏳ planificado |
 
 Cada fase se entrega en su propia rama `feature/*` con una Pull Request documentada.
@@ -36,6 +36,7 @@ La dependencia siempre apunta hacia `domain`: la UI llama a casos de uso, los ca
 - **Room** para biblioteca e historial de búsqueda; expone `Flow` para que la UI reaccione a cambios.
 - **`AppResult<T>`** para modelar carga, éxito (con origen remoto/local) y error de dominio.
 - **Inyección manual** mediante `AppContainer`, sin frameworks de anotación, para mantener un grafo explícito y pruebas rápidas.
+- **Reproductor Media3** con vídeos públicos de demostración: Jikan no facilita streams legales de episodios. Al terminar un episodio se actualiza el progreso de la biblioteca.
 - **Material 3** con paleta propia (azul noche, violeta y cian), soporte para tema claro/oscuro y dynamic color opcional.
 
 ## Requisitos y ejecución
