@@ -61,4 +61,9 @@
     <string name="library_decrease">Quitar episodio visto</string>
     <string name="library_remove">Quitar de la biblioteca</string>
     <string name="library_mark_completed">Marcar como completado</string>
+
+    <string name="player_title">Reproductor</string>
+    <string name="player_episodes">Episodios</string>
+    <string name="player_disclaimer">Vídeos de demostración: Jikan no proporciona streams oficiales.</string>
+    <string name="player_watch">Ver episodios</string>
 </resources>

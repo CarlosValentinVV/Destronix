@@ -11,6 +11,7 @@ import com.project.destronix.presentation.common.PlaceholderScreen
 import com.project.destronix.presentation.detail.DetailScreen
 import com.project.destronix.presentation.home.HomeScreen
 import com.project.destronix.presentation.library.LibraryScreen
+import com.project.destronix.presentation.player.PlayerScreen
 import com.project.destronix.presentation.search.SearchScreen
 
 @Composable
@@ -54,7 +55,16 @@ fun DestronixNavHost(
             DetailScreen(
                 animeId = entry.arguments?.getInt(DestronixDestination.ARG_ANIME_ID) ?: -1,
                 onAnimeClick = { navController.navigate(DestronixDestination.detailRoute(it)) },
+                onPlayClick = { navController.navigate(DestronixDestination.playerRoute(it)) },
             )
+        }
+        composable(
+            route = DestronixDestination.PLAYER.route,
+            arguments = listOf(
+                navArgument(DestronixDestination.ARG_ANIME_ID) { type = NavType.IntType },
+            ),
+        ) { entry ->
+            PlayerScreen(animeId = entry.arguments?.getInt(DestronixDestination.ARG_ANIME_ID) ?: -1)
         }
         composable(
             route = DestronixDestination.SEARCH_GENRE.route,

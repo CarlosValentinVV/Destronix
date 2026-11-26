@@ -46,6 +46,7 @@ fun DestronixApp() {
                         text = when {
                             currentTopLevel != null -> stringResource(currentTopLevel.labelRes)
                             currentRoute?.startsWith("anime/") == true -> stringResource(R.string.detail_title)
+                            currentRoute?.startsWith("player/") == true -> stringResource(R.string.player_title)
                             else -> stringResource(R.string.app_name)
                         },
                         style = MaterialTheme.typography.titleLarge,
