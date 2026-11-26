@@ -6,4 +6,19 @@
     <string name="nav_settings">Ajustes</string>
     <string name="placeholder_title">Muy pronto</string>
     <string name="placeholder_body">Esta sección se está construyendo. Vuelve en la próxima actualización.</string>
+
+    <string name="home_hero_cta">Ver detalles</string>
+    <string name="home_section_airing">En emisión</string>
+    <string name="home_section_upcoming">Próximos estrenos</string>
+    <string name="home_section_season">Temporada actual</string>
+    <string name="home_section_movies">Películas</string>
+    <string name="home_section_genres">Explora por género</string>
+    <string name="see_all">Ver todo</string>
+
+    <string name="error_network">Sin conexión. Comprueba tu red e inténtalo de nuevo.</string>
+    <string name="error_rate_limited">Demasiadas peticiones. Espera un momento y vuelve a intentarlo.</string>
+    <string name="error_not_found">No encontramos ese contenido.</string>
+    <string name="error_server">El servidor no responde. Inténtalo más tarde.</string>
+    <string name="error_unknown">Algo salió mal. Inténtalo de nuevo.</string>
+    <string name="action_retry">Reintentar</string>
 </resources>

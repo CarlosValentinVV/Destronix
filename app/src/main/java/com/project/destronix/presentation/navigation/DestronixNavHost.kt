@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.project.destronix.presentation.common.PlaceholderScreen
+import com.project.destronix.presentation.home.HomeScreen
 
 @Composable
 fun DestronixNavHost(
@@ -18,7 +19,11 @@ fun DestronixNavHost(
         modifier = modifier,
     ) {
         composable(DestronixDestination.HOME.route) {
-            PlaceholderScreen(title = "Inicio")
+            HomeScreen(
+                onAnimeClick = { navController.navigate(DestronixDestination.detailRoute(it)) },
+                onGenreClick = { navController.navigate(DestronixDestination.genreRoute(it)) },
+                onSearchClick = { navController.navigate(DestronixDestination.SEARCH.route) },
+            )
         }
         composable(DestronixDestination.SEARCH.route) {
             PlaceholderScreen(title = "Buscar")
@@ -31,6 +36,9 @@ fun DestronixNavHost(
         }
         composable(DestronixDestination.DETAIL.route) {
             PlaceholderScreen(title = "Detalle de anime")
+        }
+        composable(DestronixDestination.SEARCH_GENRE.route) {
+            PlaceholderScreen(title = "Búsqueda por género")
         }
     }
 }
