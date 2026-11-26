@@ -22,7 +22,7 @@ Cada fase se entrega en su propia rama `feature/*` con una Pull Request document
 app/src/main/java/com/project/destronix/
 ├── core/           # Result, errores de dominio, dispatchers
 ├── domain/         # modelos, contratos de repositorio y casos de uso
-├── data/           # DTOs/API (Retrofit), Room, mappers y repositorios
+├── data/           # configuración de fuentes, DTOs/API (Retrofit), Room, mappers y repositorios
 ├── di/             # contenedor de dependencias manual
 ├── presentation/   # navegación, pantallas, componentes y ViewModels
 └── ui/theme/       # paleta, tipografía y tema Material 3
@@ -33,6 +33,7 @@ La dependencia siempre apunta hacia `domain`: la UI llama a casos de uso, los ca
 ### Decisiones técnicas
 
 - **Retrofit + Gson** con interceptor de rate limiting (Jikan permite 3 peticiones/segundo) y caché HTTP de 10 MB.
+- **Fuentes configurables** en `assets/anime_sources.json` (ignorado por Git): la API y los vídeos se leen del JSON en tiempo de ejecución, sin tocar Kotlin. Si el archivo falta o no es válido, se usa Jikan por defecto.
 - **Room** para biblioteca e historial de búsqueda; expone `Flow` para que la UI reaccione a cambios.
 - **`AppResult<T>`** para modelar carga, éxito (con origen remoto/local) y error de dominio.
 - **Inyección manual** mediante `AppContainer`, sin frameworks de anotación, para mantener un grafo explícito y pruebas rápidas.
@@ -40,6 +41,17 @@ La dependencia siempre apunta hacia `domain`: la UI llama a casos de uso, los ca
 - **Material 3** con paleta propia (azul noche, violeta y cian), soporte para tema claro/oscuro y dynamic color opcional.
 - **DataStore Preferences** para persistir tema, modo de color y borrado del historial; el tema se aplica de forma reactiva desde la raíz de la app.
 - **GitHub Actions** compila el APK de depuración y ejecuta las pruebas unitarias en cada pull request.
+
+## Fuentes configurables
+
+La app lee en tiempo de ejecución `app/src/main/assets/anime_sources.json`, que **no se versiona**. Para apuntar a otras direcciones:
+
+1. Copia `anime_sources.example.json` como `anime_sources.json` en la misma carpeta.
+2. Edita `apiBaseUrl` de cada fuente y, si procede, `streamBaseUrl` y `websiteUrl`.
+3. Elige la fuente activa con `activeSourceId`. Las entradas con `enabled: false` se ignoran.
+4. Genera el APK con `./gradlew :app:assembleDebug`; no hace falta modificar código Kotlin.
+
+La API configurada debe responder los mismos endpoints que Jikan v4 (`/top/anime`, `/seasons/now`, `/anime/{id}`, …). `streamBaseUrl` solo afecta a los vídeos de demostración del reproductor. Si el archivo no existe o no es válido, se usa Jikan y los vídeos públicos de prueba, de modo que las compilaciones limpias y la CI siguen funcionando.
 
 ## Requisitos y ejecución
 
