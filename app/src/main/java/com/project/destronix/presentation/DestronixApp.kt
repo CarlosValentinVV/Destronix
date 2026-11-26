@@ -13,11 +13,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.project.destronix.R
+import com.project.destronix.di.LocalAppContainer
 import com.project.destronix.presentation.navigation.DestronixNavHost
 import com.project.destronix.presentation.navigation.DestronixDestination
 
@@ -28,8 +31,11 @@ fun DestronixApp() {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
     val currentTopLevel = DestronixDestination.topLevel.firstOrNull { it.route == currentRoute }
+    val container = LocalAppContainer.current
+    val factory = remember { DestronixViewModelFactory(container) }
 
-    Scaffold(
+    CompositionLocalProvider(LocalViewModelFactory provides factory) {
+        Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -75,9 +81,10 @@ fun DestronixApp() {
             }
         },
     ) { innerPadding ->
-        DestronixNavHost(
-            navController = navController,
-            modifier = Modifier.padding(innerPadding),
-        )
+            DestronixNavHost(
+                navController = navController,
+                modifier = Modifier.padding(innerPadding),
+            )
+        }
     }
 }
