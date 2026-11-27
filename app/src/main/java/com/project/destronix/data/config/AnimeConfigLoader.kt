@@ -3,6 +3,7 @@ package com.project.destronix.data.config
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.project.destronix.domain.model.VideoServerType
 import java.io.IOException
 
 /**
@@ -41,6 +42,16 @@ object AnimeConfigLoader {
         return if (url.endsWith("/")) url else "$url/"
     }
 
+    /** Las URLs de servidor pueden contener plantillas, así que no se les añade una barra final. */
+    private fun normalizeServerUrl(value: String?): String? =
+        value?.trim()
+            ?.takeIf { it.startsWith("http://") || it.startsWith("https://") }
+            ?.trimEnd('/')
+
+    private fun parseServerType(value: String?): VideoServerType =
+        runCatching { VideoServerType.valueOf(value?.trim()?.uppercase().orEmpty()) }
+            .getOrDefault(VideoServerType.DIRECT)
+
     private data class AnimeSourcesConfigDto(
         val activeSourceId: String? = null,
         val sources: List<AnimeSourceDto>? = null,
@@ -53,6 +64,7 @@ object AnimeConfigLoader {
         val streamBaseUrl: String? = null,
         val websiteUrl: String? = null,
         val enabled: Boolean? = null,
+        val servers: List<VideoServerDto>? = null,
     ) {
         fun toConfig(): AnimeSourceConfig? {
             if (enabled == false) return null
@@ -64,6 +76,28 @@ object AnimeConfigLoader {
                 streamBaseUrl = normalizeUrl(streamBaseUrl)
                     ?: AnimeSourcesConfig.DEFAULT.sources.first().streamBaseUrl,
                 websiteUrl = normalizeUrl(websiteUrl),
+                servers = servers.orEmpty().mapNotNull { it.toConfig() },
+            )
+        }
+    }
+
+    private data class VideoServerDto(
+        val id: String? = null,
+        val name: String? = null,
+        val baseUrl: String? = null,
+        val type: String? = null,
+        val language: String? = null,
+        val enabled: Boolean? = null,
+    ) {
+        fun toConfig(): VideoServerConfig? {
+            if (enabled == false) return null
+            val url = normalizeServerUrl(baseUrl) ?: return null
+            return VideoServerConfig(
+                id = id?.trim()?.takeIf { it.isNotEmpty() } ?: url,
+                name = name?.trim()?.takeIf { it.isNotEmpty() } ?: id ?: url,
+                baseUrl = url,
+                type = parseServerType(type),
+                language = language?.trim()?.takeIf { it.isNotEmpty() },
             )
         }
     }
