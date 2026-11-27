@@ -13,6 +13,8 @@
     <string name="home_section_season">Temporada actual</string>
     <string name="home_section_movies">Películas</string>
     <string name="home_section_genres">Explora por género</string>
+    <string name="home_continue_watching">Continuar viendo</string>
+    <string name="home_continue_episode">Episodio %1$d</string>
     <string name="see_all">Ver todo</string>
 
     <string name="error_network">Sin conexión. Comprueba tu red e inténtalo de nuevo.</string>
@@ -63,6 +65,8 @@
 
     <string name="player_title">Reproductor</string>
     <string name="player_episodes">Episodios</string>
+    <string name="player_servers">Servidor</string>
+    <string name="player_server_error">Ningún servidor ha podido reproducir este episodio. Prueba con otro episodio o vuelve a intentarlo.</string>
     <string name="player_disclaimer">Vídeos de demostración: Jikan no proporciona streams oficiales.</string>
     <string name="player_watch">Ver episodios</string>
 

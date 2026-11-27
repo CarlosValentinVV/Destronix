@@ -50,9 +50,14 @@ fun PlayerScreen(
 
     LaunchedEffect(animeId) { viewModel.load(animeId) }
 
-    LaunchedEffect(state.episodes, state.currentEpisodeIndex) {
-        state.episodes.getOrNull(state.currentEpisodeIndex)?.let { episode ->
-            player.setMediaItem(MediaItem.fromUri(episode.streamUrl))
+    val streamUrl = state.episodes
+        .getOrNull(state.currentEpisodeIndex)
+        ?.urlFor(state.selectedServerIndex)
+
+    LaunchedEffect(streamUrl) {
+        streamUrl?.let { url ->
+            player.stop()
+            player.setMediaItem(MediaItem.fromUri(url))
             player.prepare()
         }
     }
@@ -64,6 +69,10 @@ fun PlayerScreen(
                     viewModel.onEpisodeCompleted()
                     viewModel.nextEpisode()
                 }
+            }
+
+            override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+                viewModel.onServerError()
             }
         }
         player.addListener(listener)
@@ -108,6 +117,42 @@ fun PlayerScreen(
                         text = title,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    )
+                }
+                val servers = state.episodes
+                    .getOrNull(state.currentEpisodeIndex)
+                    ?.servers
+                    .orEmpty()
+                if (servers.isNotEmpty()) {
+                    Text(
+                        text = stringResource(R.string.player_servers),
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    )
+                    LazyRow(
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        itemsIndexed(servers) { index, server ->
+                            FilterChip(
+                                selected = index == state.selectedServerIndex,
+                                onClick = { viewModel.selectServer(index) },
+                                label = {
+                                    Text(
+                                        listOfNotNull(server.label, server.language)
+                                            .joinToString(" · "),
+                                    )
+                                },
+                            )
+                        }
+                    }
+                }
+                state.serverError?.let {
+                    Text(
+                        text = stringResource(R.string.player_server_error),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(horizontal = 16.dp),
                     )
                 }
                 Text(
