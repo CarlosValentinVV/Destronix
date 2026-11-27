@@ -2,6 +2,18 @@ package com.project.destronix.data.config
 
 import com.project.destronix.domain.model.VideoServerType
 
+/** Modo del catálogo: API compatible con Jikan o datos locales de demostración. */
+enum class CatalogMode {
+    JIKAN,
+    DEMO,
+    ;
+
+    companion object {
+        fun from(value: String?): CatalogMode =
+            entries.firstOrNull { it.name == value?.trim()?.uppercase() } ?: JIKAN
+    }
+}
+
 /** Servidor declarado en la configuración externa para los episodios. */
 data class VideoServerConfig(
     val id: String,
@@ -18,6 +30,7 @@ data class AnimeSourceConfig(
     val apiBaseUrl: String,
     val streamBaseUrl: String,
     val websiteUrl: String? = null,
+    val catalogMode: CatalogMode = CatalogMode.JIKAN,
     val servers: List<VideoServerConfig> = emptyList(),
 )
 

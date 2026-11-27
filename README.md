@@ -73,6 +73,19 @@ La API configurada debe responder los mismos endpoints que Jikan v4 (`/top/anime
 
 Se examinaron `animeflv.or.at` y `jkanime.net` para replicar su **experiencia de uso** (catálogo, ficha, episodios, selector de servidor y progreso), no su contenido. Destronix no extrae, descodifica ni redistribuye sus enlaces: esos sitios no acreditan licencias sobre los vídeos que enlazan. Para usar servidores reales, configura fuentes propias o plataformas con licencia y respeta sus condiciones de uso.
 
+## Modo demo local (elementos de prueba)
+
+Para probar búsqueda, fichas, reproducción y progreso sin depender de Jikan:
+
+1. Copia `anime_sources.example.json` como `anime_sources.json`.
+2. Pon `"activeSourceId": "demo"` y `"catalogMode": "DEMO"` en esa fuente (ya viene en la plantilla).
+3. Edita `app/src/main/assets/demo_animes.json` para crear tus propios animes de prueba; acepta los campos del modelo `Anime` (`id`, `title`, `titleEnglish`, `score`, `episodes`, `status`, `type`, `year`, `genres`, `synopsis`, …).
+4. Compila desde Android Studio con **Run** o con `./gradlew :app:assembleDebug`.
+
+El catálogo, la búsqueda y las fichas funcionan sin red. **Los vídeos de muestra sí necesitan internet**, porque son clips públicos alojados en Google Storage. Los IDs de ejemplo empiezan en `9000` para no mezclarse con los de MyAnimeList.
+
+Pruebas rápidas sugeridas: buscar `neon`, filtrar por *En emisión*, abrir el detalle, pulsar **Ver episodios** y cambiar entre `Demo SUB` y `Demo espejo LAT`. Después marca un episodio visto en Biblioteca y vuelve a Inicio para ver **Continuar viendo**.
+
 ## Requisitos y ejecución
 
 - Android Studio con SDK 37 instalado (mínimo `minSdk = 24`).

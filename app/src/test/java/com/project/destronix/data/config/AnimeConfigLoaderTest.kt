@@ -1,5 +1,6 @@
 package com.project.destronix.data.config
 
+import com.project.destronix.data.config.CatalogMode
 import com.project.destronix.domain.model.VideoServerType
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -123,5 +124,28 @@ class AnimeConfigLoaderTest {
         assertEquals(VideoServerType.DIRECT, servers[1].type)
         assertNull(servers[1].language)
         assertTrue(servers.none { it.id == "roto" || it.id == "off" })
+    }
+
+    @Test
+    fun `demo mode is parsed and does not require an api url`() {
+        val json = """
+            {
+              "activeSourceId": "demo",
+              "sources": [
+                {
+                  "id": "demo",
+                  "name": "Pruebas",
+                  "catalogMode": "DEMO",
+                  "servers": []
+                }
+              ]
+            }
+        """.trimIndent()
+
+        val config = AnimeConfigLoader.parse(json)
+
+        assertEquals(CatalogMode.DEMO, config.activeSource.catalogMode)
+        assertEquals("https://api.jikan.moe/v4/", config.activeSource.apiBaseUrl)
+        assertEquals(CatalogMode.JIKAN, AnimeSourcesConfig.DEFAULT.sources.first().catalogMode)
     }
 }

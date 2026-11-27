@@ -63,12 +63,16 @@ object AnimeConfigLoader {
         val apiBaseUrl: String? = null,
         val streamBaseUrl: String? = null,
         val websiteUrl: String? = null,
+        val catalogMode: String? = null,
         val enabled: Boolean? = null,
         val servers: List<VideoServerDto>? = null,
     ) {
         fun toConfig(): AnimeSourceConfig? {
             if (enabled == false) return null
-            val api = normalizeUrl(apiBaseUrl) ?: return null
+            val mode = CatalogMode.from(catalogMode)
+            val api = normalizeUrl(apiBaseUrl)
+                ?: if (mode == CatalogMode.DEMO) AnimeSourcesConfig.DEFAULT.sources.first().apiBaseUrl
+                else return null
             return AnimeSourceConfig(
                 id = id?.trim()?.takeIf { it.isNotEmpty() } ?: api,
                 name = name?.trim()?.takeIf { it.isNotEmpty() } ?: id ?: api,
@@ -76,6 +80,7 @@ object AnimeConfigLoader {
                 streamBaseUrl = normalizeUrl(streamBaseUrl)
                     ?: AnimeSourcesConfig.DEFAULT.sources.first().streamBaseUrl,
                 websiteUrl = normalizeUrl(websiteUrl),
+                catalogMode = mode,
                 servers = servers.orEmpty().mapNotNull { it.toConfig() },
             )
         }
