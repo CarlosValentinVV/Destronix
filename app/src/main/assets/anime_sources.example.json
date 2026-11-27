@@ -4,6 +4,7 @@
     {
       "id": "jikan",
       "name": "MyAnimeList (Jikan)",
+      "catalogMode": "JIKAN",
       "apiBaseUrl": "https://api.jikan.moe/v4",
       "streamBaseUrl": "https://storage.googleapis.com/gtv-videos-bucket/sample",
       "websiteUrl": "https://jikan.moe",
@@ -20,8 +21,32 @@
       ]
     },
     {
+      "id": "demo",
+      "name": "Datos de prueba (sin red)",
+      "catalogMode": "DEMO",
+      "streamBaseUrl": "https://storage.googleapis.com/gtv-videos-bucket/sample",
+      "enabled": false,
+      "servers": [
+        {
+          "id": "demo",
+          "name": "Demo",
+          "baseUrl": "https://storage.googleapis.com/gtv-videos-bucket/sample",
+          "type": "DIRECT",
+          "language": "SUB"
+        },
+        {
+          "id": "demo-espejo",
+          "name": "Demo espejo",
+          "baseUrl": "https://storage.googleapis.com/gtv-videos-bucket/sample",
+          "type": "DIRECT",
+          "language": "LAT"
+        }
+      ]
+    },
+    {
       "id": "alternativa",
       "name": "Fuente alternativa",
+      "catalogMode": "JIKAN",
       "apiBaseUrl": "https://mi-servidor.local/api/v4",
       "streamBaseUrl": "https://mi-servidor.local/videos",
       "websiteUrl": "https://mi-servidor.local",

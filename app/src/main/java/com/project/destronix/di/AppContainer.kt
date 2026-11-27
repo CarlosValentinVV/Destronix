@@ -7,14 +7,17 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.project.destronix.core.DefaultDispatcherProvider
 import com.project.destronix.core.DispatcherProvider
+import com.project.destronix.data.catalog.DemoAnimeCatalog
 import com.project.destronix.data.catalog.DemoEpisodeCatalog
 import com.project.destronix.data.config.AnimeConfigLoader
 import com.project.destronix.data.config.AnimeSourceConfig
 import com.project.destronix.data.config.AnimeSourcesConfig
+import com.project.destronix.data.config.CatalogMode
 import com.project.destronix.data.local.DestronixDatabase
 import com.project.destronix.data.remote.JikanApiService
 import com.project.destronix.data.remote.JikanRateLimitInterceptor
 import com.project.destronix.data.repository.AnimeRepositoryImpl
+import com.project.destronix.data.repository.DemoAnimeRepository
 import com.project.destronix.data.repository.LibraryRepositoryImpl
 import com.project.destronix.data.repository.SearchHistoryRepositoryImpl
 import com.project.destronix.data.repository.SettingsRepositoryImpl
@@ -117,7 +120,11 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
     }
 
     override val animeRepository: AnimeRepository by lazy {
-        AnimeRepositoryImpl(jikanApi, dispatchers)
+        if (animeSource.catalogMode == CatalogMode.DEMO) {
+            DemoAnimeRepository(DemoAnimeCatalog.load(context.applicationContext))
+        } else {
+            AnimeRepositoryImpl(jikanApi, dispatchers)
+        }
     }
 
     override val libraryRepository: LibraryRepository by lazy {
