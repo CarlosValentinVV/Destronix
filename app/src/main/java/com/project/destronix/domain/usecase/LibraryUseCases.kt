@@ -4,9 +4,23 @@ import com.project.destronix.domain.model.LibraryEntry
 import com.project.destronix.domain.model.LibraryStatus
 import com.project.destronix.domain.repository.LibraryRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class ObserveLibraryUseCase(private val repository: LibraryRepository) {
     operator fun invoke(): Flow<List<LibraryEntry>> = repository.observeAll()
+}
+
+/** Entradas en curso con avance real, ordenadas por actividad reciente. */
+class ObserveContinueWatchingUseCase(private val repository: LibraryRepository) {
+    operator fun invoke(): Flow<List<LibraryEntry>> = repository.observeAll().map { entries ->
+        entries
+            .filter {
+                it.status == LibraryStatus.WATCHING &&
+                    it.progressEpisodes > 0 &&
+                    (it.totalEpisodes == null || it.progressEpisodes < it.totalEpisodes)
+            }
+            .sortedByDescending { it.updatedAt }
+    }
 }
 
 class ObserveLibraryEntryUseCase(private val repository: LibraryRepository) {

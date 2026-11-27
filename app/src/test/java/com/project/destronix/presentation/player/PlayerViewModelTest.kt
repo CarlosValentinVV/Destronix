@@ -2,6 +2,7 @@ package com.project.destronix.presentation.player
 
 import com.project.destronix.core.AppResult
 import com.project.destronix.data.catalog.DemoEpisodeCatalog
+import com.project.destronix.data.config.VideoServerConfig
 import com.project.destronix.domain.model.Anime
 import com.project.destronix.domain.model.AnimeDetails
 import com.project.destronix.domain.model.HomeFeed
@@ -109,6 +110,47 @@ class PlayerViewModelTest {
 
         assertEquals(2, library.entry.value?.progressEpisodes)
         assertEquals(LibraryStatus.WATCHING, library.entry.value?.status)
+    }
+
+    @Test
+    fun `selecting a server changes the url used by the player`() = runTest(dispatcher) {
+        val multiServerCatalog = DemoEpisodeCatalog(
+            streamBaseUrl = "https://demo.test",
+            servers = listOf(
+                VideoServerConfig(id = "a", name = "Servidor A", baseUrl = "https://a.test/videos"),
+                VideoServerConfig(id = "b", name = "Servidor B", baseUrl = "https://b.test/videos"),
+            ),
+        )
+        val viewModel = createViewModel(multiServerCatalog)
+        viewModel.load(5)
+        runCurrent()
+
+        viewModel.selectServer(1)
+
+        assertEquals(1, viewModel.uiState.selectedServerIndex)
+        assertTrue(viewModel.currentStreamUrl()!!.startsWith("https://b.test/videos/"))
+    }
+
+    @Test
+    fun `playback errors switch server and finally expose a failure`() = runTest(dispatcher) {
+        val multiServerCatalog = DemoEpisodeCatalog(
+            streamBaseUrl = "https://demo.test",
+            servers = listOf(
+                VideoServerConfig(id = "a", name = "Servidor A", baseUrl = "https://a.test/videos"),
+                VideoServerConfig(id = "b", name = "Servidor B", baseUrl = "https://b.test/videos"),
+            ),
+        )
+        val viewModel = createViewModel(multiServerCatalog)
+        viewModel.load(5)
+        runCurrent()
+
+        viewModel.onServerError()
+        assertEquals(1, viewModel.uiState.selectedServerIndex)
+        assertEquals(null, viewModel.uiState.serverError)
+
+        viewModel.onServerError()
+        assertEquals(1, viewModel.uiState.selectedServerIndex)
+        assertTrue(viewModel.uiState.serverError != null)
     }
 
     @Test

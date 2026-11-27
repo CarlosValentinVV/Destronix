@@ -12,6 +12,7 @@ Aplicación Android para descubrir, organizar y ver anime. Construida con **Jetp
 | Detalle de anime | ✅ implementado |
 | Biblioteca personal | ✅ implementado |
 | Reproductor | ✅ implementado |
+| Selector de servidores y «Continuar viendo» | ✅ implementado |
 | Ajustes y pruebas finales | ✅ implementado |
 
 Cada fase se entrega en su propia rama `feature/*` con una Pull Request documentada.
@@ -33,11 +34,12 @@ La dependencia siempre apunta hacia `domain`: la UI llama a casos de uso, los ca
 ### Decisiones técnicas
 
 - **Retrofit + Gson** con interceptor de rate limiting (Jikan permite 3 peticiones/segundo) y caché HTTP de 10 MB.
-- **Fuentes configurables** en `assets/anime_sources.json` (ignorado por Git): la API y los vídeos se leen del JSON en tiempo de ejecución, sin tocar Kotlin. Si el archivo falta o no es válido, se usa Jikan por defecto.
+- **Fuentes configurables** en `assets/anime_sources.json` (ignorado por Git): la API, los vídeos y los servidores de episodio se leen del JSON en tiempo de ejecución, sin tocar Kotlin. Si el archivo falta o no es válido, se usa Jikan por defecto.
 - **Room** para biblioteca e historial de búsqueda; expone `Flow` para que la UI reaccione a cambios.
 - **`AppResult<T>`** para modelar carga, éxito (con origen remoto/local) y error de dominio.
 - **Inyección manual** mediante `AppContainer`, sin frameworks de anotación, para mantener un grafo explícito y pruebas rápidas.
-- **Reproductor Media3** con vídeos públicos de demostración: Jikan no facilita streams legales de episodios. Al terminar un episodio se actualiza el progreso de la biblioteca.
+- **Reproductor Media3** con vídeos públicos de demostración: Jikan no facilita streams legales de episodios. Cada episodio ofrece los servidores declarados en la configuración; si uno falla, se prueba el siguiente y el progreso se guarda en la biblioteca al terminar.
+- **«Continuar viendo»** en Inicio: lee la biblioteca de Room con un `Flow` y muestra las entradas en curso ordenadas por actividad reciente.
 - **Material 3** con paleta propia (azul noche, violeta y cian), soporte para tema claro/oscuro y dynamic color opcional.
 - **DataStore Preferences** para persistir tema, modo de color y borrado del historial; el tema se aplica de forma reactiva desde la raíz de la app.
 - **GitHub Actions** compila el APK de depuración y ejecuta las pruebas unitarias en cada pull request.
@@ -48,10 +50,28 @@ La app lee en tiempo de ejecución `app/src/main/assets/anime_sources.json`, que
 
 1. Copia `anime_sources.example.json` como `anime_sources.json` en la misma carpeta.
 2. Edita `apiBaseUrl` de cada fuente y, si procede, `streamBaseUrl` y `websiteUrl`.
-3. Elige la fuente activa con `activeSourceId`. Las entradas con `enabled: false` se ignoran.
-4. Genera el APK con `./gradlew :app:assembleDebug`; no hace falta modificar código Kotlin.
+3. Declara los servidores de cada fuente en el array `servers` (ver abajo).
+4. Elige la fuente activa con `activeSourceId`. Las entradas con `enabled: false` se ignoran.
+5. Genera el APK con `./gradlew :app:assembleDebug`; no hace falta modificar código Kotlin.
 
-La API configurada debe responder los mismos endpoints que Jikan v4 (`/top/anime`, `/seasons/now`, `/anime/{id}`, …). `streamBaseUrl` solo afecta a los vídeos de demostración del reproductor. Si el archivo no existe o no es válido, se usa Jikan y los vídeos públicos de prueba, de modo que las compilaciones limpias y la CI siguen funcionando.
+Cada servidor acepta:
+
+| Campo | Significado |
+| --- | --- |
+| `id` | Identificador estable del servidor. |
+| `name` | Etiqueta mostrada en el selector. |
+| `baseUrl` | Carpeta de vídeos o plantilla con `{episode}` y `{clip}`. |
+| `type` | `DIRECT` o `HLS`. `EMBED` no se ofrece porque Media3 no reproduce páginas web. |
+| `language` | Etiqueta opcional, por ejemplo `SUB` o `LAT`. |
+| `enabled` | `false` oculta el servidor. |
+
+Ejemplo de plantilla: `"baseUrl": "https://mi-servidor.local/hls/{episode}/index.m3u8"` genera una URL distinta por episodio. Si la base es una carpeta, se añade automáticamente el nombre del clip de demostración.
+
+La API configurada debe responder los mismos endpoints que Jikan v4 (`/top/anime`, `/seasons/now`, `/anime/{id}`, …). `streamBaseUrl` solo se usa como reserva si no hay servidores reproducibles. Si el archivo no existe o no es válido, se usa Jikan y los vídeos públicos de prueba, de modo que las compilaciones limpias y la CI siguen funcionando.
+
+### Límites legales de las fuentes investigadas
+
+Se examinaron `animeflv.or.at` y `jkanime.net` para replicar su **experiencia de uso** (catálogo, ficha, episodios, selector de servidor y progreso), no su contenido. Destronix no extrae, descodifica ni redistribuye sus enlaces: esos sitios no acreditan licencias sobre los vídeos que enlazan. Para usar servidores reales, configura fuentes propias o plataformas con licencia y respeta sus condiciones de uso.
 
 ## Requisitos y ejecución
 

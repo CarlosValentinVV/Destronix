@@ -19,7 +19,7 @@ class DestronixViewModelFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T = when {
         modelClass.isAssignableFrom(HomeViewModel::class.java) ->
-            HomeViewModel(container.getHomeFeed) as T
+            HomeViewModel(container.getHomeFeed, container.observeContinueWatching) as T
 
         modelClass.isAssignableFrom(SearchViewModel::class.java) ->
             SearchViewModel(

@@ -24,6 +24,8 @@ data class PlayerUiState(
     val details: AnimeDetails? = null,
     val episodes: List<VideoEpisode> = emptyList(),
     val currentEpisodeIndex: Int = 0,
+    val selectedServerIndex: Int = 0,
+    val serverError: AppError? = null,
     val isLoading: Boolean = true,
     val error: AppError? = null,
 )
@@ -41,10 +43,12 @@ class PlayerViewModel(
         private set
 
     private var loadedId = -1
+    private val failedServers = mutableSetOf<Int>()
 
     fun load(animeId: Int) {
         if (loadedId == animeId && uiState.details != null) return
         loadedId = animeId
+        failedServers.clear()
         uiState = PlayerUiState()
         viewModelScope.launch {
             when (val result = getAnimeDetails(animeId)) {
@@ -64,8 +68,48 @@ class PlayerViewModel(
     }
 
     fun selectEpisode(index: Int) {
-        if (index in uiState.episodes.indices) {
-            uiState = uiState.copy(currentEpisodeIndex = index)
+        if (index !in uiState.episodes.indices) return
+        failedServers.clear()
+        uiState = uiState.copy(
+            currentEpisodeIndex = index,
+            selectedServerIndex = uiState.selectedServerIndex
+                .takeIf { it in uiState.episodes[index].servers.indices }
+                ?: 0,
+            serverError = null,
+        )
+    }
+
+    fun selectServer(index: Int) {
+        val servers = currentEpisode()?.servers ?: return
+        if (index !in servers.indices) return
+        failedServers.clear()
+        uiState = uiState.copy(selectedServerIndex = index, serverError = null)
+    }
+
+    /** URL que debe reproducir la UI, teniendo en cuenta el servidor elegido. */
+    fun currentStreamUrl(): String? =
+        currentEpisode()?.urlFor(uiState.selectedServerIndex)
+
+    /**
+     * Ante un error de reproducción prueba el siguiente servidor no fallado.
+     * Cuando se agotan todos, expone un error en lugar de repetir infinitamente.
+     */
+    fun onServerError() {
+        val servers = currentEpisode()?.servers.orEmpty()
+        if (servers.size <= 1) {
+            uiState = uiState.copy(serverError = serverFailure())
+            return
+        }
+
+        val current = uiState.selectedServerIndex
+        failedServers.add(current)
+        val next = ((current + 1) until servers.size).firstOrNull { it !in failedServers }
+            ?: (0 until current).firstOrNull { it !in failedServers }
+
+        uiState = if (next == null) {
+            uiState.copy(serverError = serverFailure())
+        } else {
+            uiState.copy(selectedServerIndex = next, serverError = null)
         }
     }
 
@@ -76,7 +120,7 @@ class PlayerViewModel(
     /** Guarda el avance cuando termina un episodio, creando la entrada si no existía. */
     fun onEpisodeCompleted() {
         val anime = uiState.details?.anime ?: return
-        val episodeNumber = uiState.episodes.getOrNull(uiState.currentEpisodeIndex)?.number ?: return
+        val episodeNumber = currentEpisode()?.number ?: return
         viewModelScope.launch {
             val existing = observeLibraryEntry(anime.id).first()
             if (existing == null) {
@@ -99,4 +143,9 @@ class PlayerViewModel(
             }
         }
     }
+
+    private fun currentEpisode(): VideoEpisode? =
+        uiState.episodes.getOrNull(uiState.currentEpisodeIndex)
+
+    private fun serverFailure() = AppError.Server(0, "No hay servidores disponibles para este episodio.")
 }

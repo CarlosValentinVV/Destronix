@@ -1,7 +1,9 @@
 package com.project.destronix.data.config
 
+import com.project.destronix.domain.model.VideoServerType
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AnimeConfigLoaderTest {
@@ -88,5 +90,38 @@ class AnimeConfigLoaderTest {
         val config = AnimeConfigLoader.parse(json)
 
         assertEquals("primera", config.activeSource.id)
+    }
+
+    @Test
+    fun `servers are parsed from the active source`() {
+        val json = """
+            {
+              "activeSourceId": "principal",
+              "sources": [
+                {
+                  "id": "principal",
+                  "apiBaseUrl": "https://api.test/v4",
+                  "servers": [
+                    { "id": "desu", "name": "Desu", "baseUrl": "https://cdn.test/videos", "type": "HLS", "language": "SUB" },
+                    { "name": "Directo", "baseUrl": "https://otro.test/videos/" },
+                    { "id": "roto", "baseUrl": "ftp://no-valido" },
+                    { "id": "off", "baseUrl": "https://off.test", "enabled": false }
+                  ]
+                }
+              ]
+            }
+        """.trimIndent()
+
+        val servers = AnimeConfigLoader.parse(json).activeSource.servers
+
+        assertEquals(2, servers.size)
+        assertEquals("desu", servers[0].id)
+        assertEquals("Desu", servers[0].name)
+        assertEquals("https://cdn.test/videos", servers[0].baseUrl)
+        assertEquals(VideoServerType.HLS, servers[0].type)
+        assertEquals("SUB", servers[0].language)
+        assertEquals(VideoServerType.DIRECT, servers[1].type)
+        assertNull(servers[1].language)
+        assertTrue(servers.none { it.id == "roto" || it.id == "off" })
     }
 }

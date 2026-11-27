@@ -8,11 +8,14 @@ import androidx.lifecycle.viewModelScope
 import com.project.destronix.core.AppError
 import com.project.destronix.core.AppResult
 import com.project.destronix.domain.model.HomeFeed
+import com.project.destronix.domain.model.LibraryEntry
 import com.project.destronix.domain.usecase.GetHomeFeedUseCase
+import com.project.destronix.domain.usecase.ObserveContinueWatchingUseCase
 import kotlinx.coroutines.launch
 
 data class HomeUiState(
     val feed: HomeFeed? = null,
+    val continueWatching: List<LibraryEntry> = emptyList(),
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     val error: AppError? = null,
@@ -20,6 +23,7 @@ data class HomeUiState(
 
 class HomeViewModel(
     private val getHomeFeed: GetHomeFeedUseCase,
+    private val observeContinueWatching: ObserveContinueWatchingUseCase,
 ) : ViewModel() {
 
     var uiState by mutableStateOf(HomeUiState())
@@ -27,6 +31,11 @@ class HomeViewModel(
 
     init {
         load()
+        viewModelScope.launch {
+            observeContinueWatching().collect { entries ->
+                uiState = uiState.copy(continueWatching = entries)
+            }
+        }
     }
 
     fun load(refresh: Boolean = false) {
