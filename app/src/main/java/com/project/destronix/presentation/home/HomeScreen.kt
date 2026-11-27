@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.Surface
@@ -28,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -38,6 +40,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.SubcomposeAsyncImage
 import com.project.destronix.R
 import com.project.destronix.domain.model.Anime
+import com.project.destronix.domain.model.LibraryEntry
 import com.project.destronix.presentation.LocalViewModelFactory
 import com.project.destronix.presentation.common.AnimeCard
 import com.project.destronix.presentation.common.ErrorState
@@ -51,6 +54,7 @@ fun HomeScreen(
     onAnimeClick: (Int) -> Unit,
     onGenreClick: (Int) -> Unit,
     onSearchClick: () -> Unit,
+    onPlayClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val viewModel: HomeViewModel = viewModel(factory = LocalViewModelFactory.current)
@@ -71,9 +75,11 @@ fun HomeScreen(
 
             state.feed != null -> HomeContent(
                 feed = state.feed,
+                continueWatching = state.continueWatching,
                 onAnimeClick = onAnimeClick,
                 onGenreClick = onGenreClick,
                 onSearchClick = onSearchClick,
+                onPlayClick = onPlayClick,
             )
         }
     }
@@ -82,9 +88,11 @@ fun HomeScreen(
 @Composable
 private fun HomeContent(
     feed: com.project.destronix.domain.model.HomeFeed,
+    continueWatching: List<LibraryEntry>,
     onAnimeClick: (Int) -> Unit,
     onGenreClick: (Int) -> Unit,
     onSearchClick: () -> Unit,
+    onPlayClick: (Int) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -98,6 +106,21 @@ private fun HomeContent(
                 onClick = { onAnimeClick(hero.id) },
                 modifier = Modifier.padding(16.dp),
             )
+        }
+        if (continueWatching.isNotEmpty()) {
+            SectionHeader(title = stringResource(R.string.home_continue_watching))
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(continueWatching, key = { it.animeId }) { entry ->
+                    ContinueWatchingCard(
+                        entry = entry,
+                        onClick = { onPlayClick(entry.animeId) },
+                        modifier = Modifier.width(180.dp),
+                    )
+                }
+            }
         }
         SectionHeader(title = stringResource(R.string.home_section_genres))
         LazyRow(
@@ -135,6 +158,57 @@ private fun HomeContent(
             items = feed.movies,
             onAnimeClick = onAnimeClick,
             onSeeAll = onSearchClick,
+        )
+    }
+}
+
+@Composable
+private fun ContinueWatchingCard(
+    entry: LibraryEntry,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(16f / 9f)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+        ) {
+            SubcomposeAsyncImage(
+                model = entry.imageUrl,
+                contentDescription = entry.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize(),
+                loading = { ShimmerBox(Modifier.fillMaxSize()) },
+                error = { ImageFallback(Modifier.fillMaxSize()) },
+            )
+        }
+        Text(
+            text = entry.title,
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = 2,
+            minLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(top = 6.dp),
+        )
+        Text(
+            text = stringResource(R.string.home_continue_episode, entry.progressEpisodes + 1),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(top = 2.dp),
+        )
+        LinearProgressIndicator(
+            progress = { entry.progress },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 6.dp)
+                .height(6.dp),
         )
     }
 }

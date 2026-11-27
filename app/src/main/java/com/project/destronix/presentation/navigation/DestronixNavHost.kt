@@ -29,6 +29,7 @@ fun DestronixNavHost(
                 onAnimeClick = { navController.navigate(DestronixDestination.detailRoute(it)) },
                 onGenreClick = { navController.navigate(DestronixDestination.genreRoute(it)) },
                 onSearchClick = { navController.navigate(DestronixDestination.SEARCH.route) },
+                onPlayClick = { navController.navigate(DestronixDestination.playerRoute(it)) },
             )
         }
         composable(DestronixDestination.SEARCH.route) {

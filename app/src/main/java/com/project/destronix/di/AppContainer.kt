@@ -25,6 +25,7 @@ import com.project.destronix.domain.repository.SettingsRepository
 import com.project.destronix.domain.usecase.ClearSearchHistoryUseCase
 import com.project.destronix.domain.usecase.GetAnimeDetailsUseCase
 import com.project.destronix.domain.usecase.GetHomeFeedUseCase
+import com.project.destronix.domain.usecase.ObserveContinueWatchingUseCase
 import com.project.destronix.domain.usecase.ObserveLibraryEntryUseCase
 import com.project.destronix.domain.usecase.ObserveLibraryUseCase
 import com.project.destronix.domain.usecase.ObserveSearchHistoryUseCase
@@ -54,6 +55,7 @@ interface AppContainer {
     val settingsRepository: SettingsRepository
 
     val getHomeFeed: GetHomeFeedUseCase
+    val observeContinueWatching: ObserveContinueWatchingUseCase
     val searchAnime: SearchAnimeUseCase
     val getAnimeDetails: GetAnimeDetailsUseCase
     val observeLibrary: ObserveLibraryUseCase
@@ -89,7 +91,7 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
     override val animeSource: AnimeSourceConfig get() = animeConfig.activeSource
 
     override val episodeCatalog: DemoEpisodeCatalog by lazy {
-        DemoEpisodeCatalog(animeSource.streamBaseUrl)
+        DemoEpisodeCatalog(animeSource.streamBaseUrl, animeSource.servers)
     }
 
     private val okHttpClient: OkHttpClient by lazy {
@@ -131,6 +133,7 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
     }
 
     override val getHomeFeed = GetHomeFeedUseCase(animeRepository)
+    override val observeContinueWatching = ObserveContinueWatchingUseCase(libraryRepository)
     override val searchAnime = SearchAnimeUseCase(animeRepository)
     override val getAnimeDetails = GetAnimeDetailsUseCase(animeRepository)
     override val observeLibrary = ObserveLibraryUseCase(libraryRepository)

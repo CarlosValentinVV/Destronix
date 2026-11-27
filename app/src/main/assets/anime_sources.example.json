@@ -7,7 +7,17 @@
       "apiBaseUrl": "https://api.jikan.moe/v4",
       "streamBaseUrl": "https://storage.googleapis.com/gtv-videos-bucket/sample",
       "websiteUrl": "https://jikan.moe",
-      "enabled": true
+      "enabled": true,
+      "servers": [
+        {
+          "id": "demo",
+          "name": "Demo",
+          "baseUrl": "https://storage.googleapis.com/gtv-videos-bucket/sample",
+          "type": "DIRECT",
+          "language": "SUB",
+          "enabled": true
+        }
+      ]
     },
     {
       "id": "alternativa",
@@ -15,7 +25,23 @@
       "apiBaseUrl": "https://mi-servidor.local/api/v4",
       "streamBaseUrl": "https://mi-servidor.local/videos",
       "websiteUrl": "https://mi-servidor.local",
-      "enabled": false
+      "enabled": false,
+      "servers": [
+        {
+          "id": "principal",
+          "name": "Servidor principal",
+          "baseUrl": "https://mi-servidor.local/videos",
+          "type": "DIRECT",
+          "language": "LAT"
+        },
+        {
+          "id": "hls",
+          "name": "HLS",
+          "baseUrl": "https://mi-servidor.local/hls/{episode}/index.m3u8",
+          "type": "HLS",
+          "language": "SUB"
+        }
+      ]
     }
   ]
 }
